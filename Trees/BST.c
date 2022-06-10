@@ -8,7 +8,10 @@ void insertNode(TreeNode* node, int data);
 TreeNode* createNode(int data);
 void printTree(TreeNode* node);
 void destroy(TreeNode* node);
-int treeHeight(TreeNode* node);
+int checkUtil(TreeNode* root, int level, int* leafLevel);
+int check(struct TreeNode* root);
+
+
 
 
 void initBST(BST* bst) {
@@ -101,23 +104,31 @@ int find(TreeNode* node, int N) {
 	find(node->right,N);
 }
 
-int sameHeightLeaves(BST* bst) {
-	if (!bst->root) {
-		printf("The tree is empty");
-		return -1;
+int sameHeightLeaves(BST* bst) {	
+	int level = 0, leafLevel = 0;
+	return checkUtil(bst, level, &leafLevel);
+}
+
+int checkUtil(TreeNode* node, int level, int* leafLevel)
+{
+	if (node == NULL)  return 1;
+
+	if (node->left == NULL && node->right == NULL)
+	{
+		if (*leafLevel == 0)
+		{
+			*leafLevel = level; 
+			return 1;
+		}
+
+		return (level == *leafLevel);
 	}
-	return sameHeight(bst);
+
+	return checkUtil(node->left, level + 1, leafLevel) &&
+		checkUtil(node->right, level + 1, leafLevel);
 }
 
-int treeHeight(TreeNode* node) {
-	if (!node) return 0;
-	return 1 + max(treeHeight(node->left), treeHeight(node->right));
-}
 
-int sameHeight(TreeNode* node) {
-	if (!node) return 0;
-	return (treeHeight(node->left) == treeHeight(node->right));
-}
 
 
 
